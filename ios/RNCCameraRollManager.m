@@ -21,6 +21,7 @@
 #import <React/RCTUtils.h>
 
 #import "RNCAssetsLibraryRequestHandler.h"
+#import <SDWebImageWebPCoder/SDWebImageWebPCoder.h>
 
 @implementation RCTConvert (PHAssetCollectionSubtype)
 
@@ -140,6 +141,10 @@ RCT_EXPORT_METHOD(saveToCameraRoll:(NSURLRequest *)request
       } else {
         NSData *data = [NSData dataWithContentsOfURL:inputURI];
         UIImage *image = [UIImage imageWithData:data];
+        BOOL isWebp =  [[SDImageWebPCoder sharedCoder] canDecodeFromData:data];
+          if (isWebp) {
+              image = [[SDImageWebPCoder sharedCoder] decodedImageWithData:data options:nil];
+         }
         assetRequest = [PHAssetChangeRequest creationRequestForAssetFromImage:image];
       }
       placeholder = [assetRequest placeholderForCreatedAsset];
